@@ -31,8 +31,14 @@
                     var newDoc = {id: 42, name: name, content: ""} // FIXME
                     setActive(newDoc.id)
                     setDocuments([...documents, newDoc])
+
+                    // Doesn't seem to work?
+                    setCurrentContent(
+                        documents.find((d) => d.id == newDoc.id).content,
+                    )
                 }
 
+                // Seems to crash:
                 function deleteDocument(id) {
                     setActive(null)
                     setDocuments(documents.filter((d) => d.id != id))
@@ -104,13 +110,13 @@
                                     value={currentContent}
                                     onChange={(event) => {
                                         let c = event.target.value
-                                        setCurrentContent(c)
                                         setDocuments((docs) => {
                                             docs.find(
                                                 (d) => d.id == active,
                                             ).content = c
                                             return docs
                                         })
+                                        setCurrentContent(c)
                                     }}
                                 ></textarea>
                             </div>
