@@ -29,13 +29,8 @@
                         "Please enter a name for the new document:",
                     )
                     var newDoc = {id: 42, name: name, content: ""} // FIXME
-                    setActive(newDoc.id)
                     setDocuments([...documents, newDoc])
-
-                    // Doesn't seem to work?
-                    setCurrentContent(
-                        documents.find((d) => d.id == newDoc.id).content,
-                    )
+                    setActive(newDoc.id)
                 }
 
                 // Seems to crash:
@@ -65,9 +60,15 @@
                 ])
                 const [active, setActive] = useState(0)
 
-                const [currentContent, setCurrentContent] = useState(
-                    documents.find((d) => d.id == active).content,
-                )
+                const getCurrentContent = () => documents.find((d) => d.id === active).content;
+                const setCurrentContent = (newContent) => {
+                    setDocuments((docs) => docs.map(doc => {
+                        if (doc.id !== active) {
+                            return doc;
+                        }
+                        return { ...doc, content: newContent };
+                    }));
+                };
 
                 const listItems = documents.map((d) => (
                     <div
@@ -77,9 +78,6 @@
                         }`}
                         onClick={() => {
                             setActive(d.id)
-                            setCurrentContent(
-                                documents.find((d2) => d2.id == d.id).content,
-                            )
                         }}
                     >
                         <div className="flex-grow p-2">{d.name}</div>
@@ -107,17 +105,8 @@
                             <div className="w-full h-screen">
                                 <textarea
                                     className="p-4 w-full h-screen resize-none"
-                                    value={currentContent}
-                                    onChange={(event) => {
-                                        let c = event.target.value
-                                        setDocuments((docs) => {
-                                            docs.find(
-                                                (d) => d.id == active,
-                                            ).content = c
-                                            return docs
-                                        })
-                                        setCurrentContent(c)
-                                    }}
+                                    value={getCurrentContent()}
+                                    onChange={(event) => setCurrentContent(event.target.value)}
                                 ></textarea>
                             </div>
                         </div>
