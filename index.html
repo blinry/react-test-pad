@@ -33,10 +33,9 @@
                     setActive(newDoc.id)
                 }
 
-                // Seems to crash:
                 function deleteDocument(id) {
                     setActive(null)
-                    setDocuments(documents.filter((d) => d.id != id))
+                    setDocuments(documents.filter((d) => d.id !== id))
                 }
 
                 const [documents, setDocuments] = useState([
@@ -60,7 +59,14 @@
                 ])
                 const [active, setActive] = useState(0)
 
-                const getCurrentContent = () => documents.find((d) => d.id === active).content;
+                const getCurrentContent = () => {
+                    const currentDoc = documents.find((d) => d.id === active);
+                    if (!currentDoc) {
+                        return 'No active document!';
+                    }
+                    return currentDoc.content;
+                }
+
                 const setCurrentContent = (newContent) => {
                     setDocuments((docs) => docs.map(doc => {
                         if (doc.id !== active) {
@@ -74,7 +80,7 @@
                     <div
                         key={d.id}
                         className={`flex hover:bg-gray-500 cursor-pointer ${
-                            active == d.id ? "bg-gray-400" : ""
+                            active === d.id ? "bg-gray-400" : ""
                         }`}
                         onClick={() => {
                             setActive(d.id)
